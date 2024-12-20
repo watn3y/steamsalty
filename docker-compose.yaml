@@ -3,6 +3,8 @@ services:
     image: ghcr.io/watn3y/steamsalty:master
     container_name: steamsalty
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - TELEGRAMAPITOKEN=
       - STEAMAPIKEY=
