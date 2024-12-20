@@ -11,7 +11,7 @@ import (
 	"watn3y/steamsalty/config"
 )
 
-var sleeptime time.Duration = 10 * time.Second
+var sleeptime time.Duration = 1 * time.Minute
 
 func StartWatchers(bot *tgbotapi.BotAPI) {
 	var wg sync.WaitGroup
