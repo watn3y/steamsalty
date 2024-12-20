@@ -1,0 +1,11 @@
+services:
+  steamsalty:
+    image: ghcr.io/watn3y/steamsalty:master
+    container_name: steamsalty
+    restart: unless-stopped
+    environment:
+      - TELEGRAMAPITOKEN=
+      - STEAMAPIKEY=
+      - DebugMode=false
+      - CHATID=123
+      - WATCHERS=123,456,789
