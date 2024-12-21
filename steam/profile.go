@@ -46,14 +46,14 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64) {
 		}
 
 		if strings.Contains(currentCommentsPage.CommentsHTML, steamContentCheckText) {
-			log.Info().Uint64("ProfileID", steamID).Msg("Found new comment(s) still being checked by Steam, retrying in "+ sleeptime.String())
+			log.Info().Uint64("ProfileID", steamID).Msg("Found new comment(s) still being checked by Steam, retrying in " + sleeptime.String())
 			time.Sleep(sleeptime)
 			continue
 		}
 
 		log.Info().Uint64("ProfileID", steamID).Msg("Found new comment(s)")
 
-		profileOwner := getPlayerDetails(steamID)
+		profileOwner := GetPlayerDetails(steamID)
 
 		for _, comment := range parseComments(currentCommentsPage) {
 			log.Debug().Interface("Comment", comment).Msg("Processing Comment")
