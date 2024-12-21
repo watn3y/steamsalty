@@ -12,6 +12,6 @@ func getPlayerDetails(steamID uint64) (summary steamapi.PlayerSummary) {
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get Player Summary")
 	}
-
+	log.Debug().Interface("Player", response[0]).Msg("Successfully got PlayerSummary from Steam API")
 	return response[0]
 }

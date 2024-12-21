@@ -2,14 +2,18 @@ package steam
 
 import (
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/rs/zerolog/log"
 )
 
-func getComments(steamID uint64, start int, count int) (comments CommentResponse) {
+func getComments(steamID uint64, start int, count int) (page CommentsPage) {
 
 	baseURL := "https://steamcommunity.com/comment/Profile/render/"
 
@@ -38,11 +42,49 @@ func getComments(steamID uint64, start int, count int) (comments CommentResponse
 		log.Trace().Interface("Body", resp.Body)
 	}
 
-	err = json.Unmarshal(body, &comments)
+	err = json.Unmarshal(body, &page)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to parse Comments as JSON")
 	}
 
-	log.Debug().Interface("CommentPage", comments).Msg("Successfully got Comment Page")
+	log.Debug().Interface("CommentPage", page).Uint64("ProfileID", steamID).Msg("Successfully got Comment Page")
+
+	return page
+}
+
+func parseComments(rawComments CommentsPage) (comments []Comment) {
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(rawComments.CommentsHTML))
+	if err != nil {
+		log.Error().Err(err).Msg("Error while parsing CommentsHTML")
+		return
+	}
+	doc.Find(".commentthread_comment.responsive_body_text").Each(func(i int, s *goquery.Selection) {
+		var c Comment
+
+		parsedID, err := strconv.ParseUint(strings.TrimPrefix(s.AttrOr("id", ""), "comment_"), 10, 64)
+		if err != nil {
+			log.Error().Err(err).Msg("Error while parsing Comment ID")
+			return
+		}
+		c.ID = parsedID
+
+		c.Timestamp, err = strconv.ParseInt(s.Find(".commentthread_comment_timestamp").AttrOr("data-timestamp", ""), 10, 64)
+		if err != nil {
+			log.Error().Err(err).Msg("Error while parsing Comment Timestamp")
+			return
+		}
+
+		c.Author = s.Find(".commentthread_comment_author .hoverunderline bdi").Text()
+
+		c.AuthorProfileURL, _ = s.Find(".commentthread_comment_author .hoverunderline").Attr("href")
+
+		c.Text = strings.TrimSpace(s.Find(".commentthread_comment_text").Text())
+
+		comments = append(comments, c)
+	})
+
+	slices.Reverse(comments)
+	log.Debug().Interface("Comments", comments).Msg("Successfully parsed Comment Page")
 	return comments
 }

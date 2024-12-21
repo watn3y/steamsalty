@@ -2,16 +2,21 @@ package steam
 
 import (
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/rs/zerolog/log"
 	"math"
+
+	"strings"
 	"sync"
 	"time"
+
 	"watn3y/steamsalty/botIO"
 	"watn3y/steamsalty/config"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/rs/zerolog/log"
 )
 
-var sleeptime time.Duration = 1 * time.Minute
+var sleeptime time.Duration = time.Duration(config.BotConfig.SleepInterval) * time.Second
+var steamContentCheckText string = "This comment is awaiting analysis by our automated content check system. It will be temporarily hidden until we verify that it does not contain harmful content (e.g. links to websites that attempt to steal information)."
 
 func StartWatchers(bot *tgbotapi.BotAPI) {
 	var wg sync.WaitGroup
@@ -29,29 +34,47 @@ func StartWatchers(bot *tgbotapi.BotAPI) {
 
 func watcher(bot *tgbotapi.BotAPI, steamID uint64) {
 	log.Info().Uint64("SteamID", steamID).Msg("Started Watcher")
-	var previousCount int
+
+	var newestProcessedComment int64 = 0
+
 	for {
-		currentCount := getComments(steamID, math.MaxInt32, 0).TotalCount
-		if previousCount == 0 || currentCount <= previousCount {
-			previousCount = currentCount
+		currentCommentsPage := getComments(steamID, 0, math.MaxInt32)
+		if newestProcessedComment == 0 || newestProcessedComment == currentCommentsPage.TimeLastPost {
+			newestProcessedComment = currentCommentsPage.TimeLastPost
 			time.Sleep(sleeptime)
 			continue
 		}
 
-		log.Info().Int("NumComment", currentCount).Uint64("SteamID", steamID).Msg("Found new comment")
-
-		player := getPlayerDetails(steamID)
-
-		msg := tgbotapi.MessageConfig{
-			BaseChat:              tgbotapi.BaseChat{ChatID: config.BotConfig.ChatID},
-			ParseMode:             "html",
-			DisableWebPagePreview: false,
-			Text:                  fmt.Sprintf(`New comment on <a href="%s">%s's</a> profile`, player.ProfileURL, player.PersonaName),
+		if strings.Contains(currentCommentsPage.CommentsHTML, steamContentCheckText) {
+			log.Info().Uint64("ProfileID", steamID).Msg("Found new comment(s) still being checked by Steam, retrying in "+ sleeptime.String())
+			time.Sleep(sleeptime)
+			continue
 		}
 
-		botIO.SendMessage(msg, bot)
+		log.Info().Uint64("ProfileID", steamID).Msg("Found new comment(s)")
 
-		previousCount = currentCount
+		profileOwner := getPlayerDetails(steamID)
+
+		for _, comment := range parseComments(currentCommentsPage) {
+			log.Debug().Interface("Comment", comment).Msg("Processing Comment")
+			if comment.Timestamp <= newestProcessedComment {
+				log.Debug().Uint64("CommentID", comment.ID).Msg("Skipping Comment")
+				continue
+			}
+
+			msg := tgbotapi.MessageConfig{
+				BaseChat:              tgbotapi.BaseChat{ChatID: config.BotConfig.ChatID},
+				ParseMode:             "HTML",
+				DisableWebPagePreview: true,
+				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`, comment.AuthorProfileURL, comment.Author, profileOwner.ProfileURL, profileOwner.PersonaName) + "\n" +
+					"<blockquote>" + comment.Text + "</blockquote>",
+			}
+			log.Info().Interface("Comment", comment).Msg("Notifying about new Comment")
+			botIO.SendMessage(msg, bot)
+			time.Sleep(time.Minute / 20)
+		}
+
+		newestProcessedComment = currentCommentsPage.TimeLastPost
 		time.Sleep(sleeptime)
 	}
 }
