@@ -1,12 +1,13 @@
 package steam
 
 import (
+	"watn3y/steamsalty/config"
+
 	"github.com/Philipp15b/go-steamapi"
 	"github.com/rs/zerolog/log"
-	"watn3y/steamsalty/config"
 )
 
-func getPlayerDetails(steamID uint64) (summary steamapi.PlayerSummary) {
+func GetPlayerDetails(steamID uint64) (summary steamapi.PlayerSummary) {
 
 	response, err := steamapi.GetPlayerSummaries([]uint64{steamID}, config.BotConfig.SteamAPIKey)
 	if err != nil {
