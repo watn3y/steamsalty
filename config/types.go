@@ -6,4 +6,5 @@ type config struct {
 	DebugMode        bool     `env:"DEBUGMODE, default=false"`
 	ChatID           int64    `env:"CHATID"`
 	Watchers         []uint64 `env:"WATCHERS"`
+	SleepInterval    int      `env:"SLEEPINTERVAL"`
 }

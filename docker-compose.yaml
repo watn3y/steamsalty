@@ -11,3 +11,4 @@ services:
       - DebugMode=false
       - CHATID=123
       - WATCHERS=123,456,789
+      - SLEEPINTERVAL=60
