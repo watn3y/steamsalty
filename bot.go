@@ -29,9 +29,8 @@ func bot() {
 			continue
 		}
 
-		log.Info().Int64("ChatID", update.Message.Chat.ID).Int64("UserID", update.Message.From.ID).Str("Text", update.Message.Text).Msg("Recieved Message")
-
 		if update.Message.IsCommand() {
+			log.Info().Int64("ChatID", update.Message.Chat.ID).Int64("UserID", update.Message.From.ID).Str("Text", update.Message.Text).Msg("Received Command")
 			commands.Commands(update, bot)
 		}
 	}
