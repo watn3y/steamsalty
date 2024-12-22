@@ -1,10 +1,10 @@
 package config
 
 type config struct {
-	TelegramAPIToken string   `env:"TELEGRAMAPITOKEN, required"`
-	SteamAPIKey      string   `env:"STEAMAPIKEY, required"`
-	DebugMode        bool     `env:"DEBUGMODE, default=false"`
-	ChatID           int64    `env:"CHATID"`
-	Watchers         []uint64 `env:"WATCHERS"`
-	SleepInterval    int      `env:"SLEEPINTERVAL"`
+	LogLevel         int      `env:"STEAMSALTY_LOGLEVEL, default=1"`
+	TelegramAPIToken string   `env:"STEAMSALTY_TELEGRAMAPITOKEN, required"`
+	SteamAPIKey      string   `env:"STEAMSALTY_STEAMAPIKEY, required"`
+	ChatID           int64    `env:"STEAMSALTY_CHATID, required"`
+	Watchers         []uint64 `env:"STEAMSALTY_WATCHERS, required"`
+	SleepInterval    int      `env:"STEAMSALTY_SLEEPINTERVAL, default=60"`
 }

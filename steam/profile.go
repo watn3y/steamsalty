@@ -15,30 +15,30 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var sleeptime time.Duration = time.Duration(config.BotConfig.SleepInterval) * time.Second
 var steamContentCheckText string = "This comment is awaiting analysis by our automated content check system. It will be temporarily hidden until we verify that it does not contain harmful content (e.g. links to websites that attempt to steal information)."
 
 func StartWatchers(bot *tgbotapi.BotAPI) {
+
 	var wg sync.WaitGroup
 
 	for _, steamID := range config.BotConfig.Watchers {
 		wg.Add(1)
 		go func(steamID uint64) {
 			defer wg.Done()
-			watcher(bot, steamID)
+			watcher(bot, steamID, time.Duration(config.BotConfig.SleepInterval)*time.Second)
 		}(steamID)
 	}
 
 	wg.Wait()
 }
 
-func watcher(bot *tgbotapi.BotAPI, steamID uint64) {
+func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 	log.Info().Uint64("SteamID", steamID).Msg("Started Watcher")
 
 	var newestProcessedComment int64 = 0
 
 	for {
-		currentCommentsPage := getComments(steamID, 0, math.MaxInt32)
+		currentCommentsPage := GetComments(steamID, 0, math.MaxInt32)
 		if newestProcessedComment == 0 || newestProcessedComment == currentCommentsPage.TimeLastPost {
 			newestProcessedComment = currentCommentsPage.TimeLastPost
 			time.Sleep(sleeptime)

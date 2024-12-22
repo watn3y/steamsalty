@@ -13,6 +13,8 @@ import (
 func bot() {
 	updates, bot := botIO.Authenticate()
 
+	go commands.SetBotCommands(bot)
+
 	go steam.StartWatchers(bot)
 
 	for update := range updates {

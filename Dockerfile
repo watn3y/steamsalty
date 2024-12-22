@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY . .
 ARG TARGETOS TARGETARCH
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o /app/steamsalty
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o ./steamsalty
 
 
 
@@ -19,6 +19,6 @@ WORKDIR /app
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
 COPY --from=builder /usr/share/ca-certificates /usr/share/ca-certificates
 
-COPY --from=builder /app/steamsalty /app/steamsalty
+COPY --from=builder /steamsalty/steamsalty /app/steamsalty
 
 ENTRYPOINT ["/app/steamsalty"]

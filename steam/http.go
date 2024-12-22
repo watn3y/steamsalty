@@ -13,7 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func getComments(steamID uint64, start int, count int) (page CommentsPage) {
+func GetComments(steamID uint64, start int, count int) (page CommentsPage) {
 
 	baseURL := "https://steamcommunity.com/comment/Profile/render/"
 
@@ -47,7 +47,7 @@ func getComments(steamID uint64, start int, count int) (page CommentsPage) {
 		log.Error().Err(err).Msg("Failed to parse Comments as JSON")
 	}
 
-	log.Debug().Interface("CommentPage", page).Uint64("ProfileID", steamID).Msg("Successfully got Comment Page")
+	log.Trace().Interface("CommentPage", page).Uint64("ProfileID", steamID).Msg("Got Comment Page")
 
 	return page
 }
@@ -85,6 +85,6 @@ func parseComments(rawComments CommentsPage) (comments []Comment) {
 	})
 
 	slices.Reverse(comments)
-	log.Debug().Interface("Comments", comments).Msg("Successfully parsed Comment Page")
+	log.Trace().Interface("Comments", comments).Msg("Parsed Comment Page")
 	return comments
 }
