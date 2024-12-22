@@ -1,12 +1,15 @@
-FROM golang:alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.23.4-alpine AS builder
 
 WORKDIR /steamsalty
 
 RUN apk update && apk add --no-cache ca-certificates 
 
-COPY . .
+COPY go.mod go.sum ./
 RUN go mod download
-RUN go build -o /app/steamsalty
+
+COPY . .
+ARG TARGETOS TARGETARCH
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o /app/steamsalty
 
 
 
