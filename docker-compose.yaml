@@ -1,6 +1,6 @@
 services:
   steamsalty:
-    image: ghcr.io/watn3y/steamsalty:master
+    image: watn3y/steamsalty:master
     container_name: steamsalty
     restart: unless-stopped
     volumes:
