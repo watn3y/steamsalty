@@ -2,8 +2,6 @@ name: Build and Push to Docker Hub on changes to master branch
 
 on:
   push:
-    branches:
-      - master
 
 jobs:
   docker:
@@ -18,10 +16,8 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{github.actor}}
-          password: ${{secrets.GHCR_TOKEN}} # needs read:packages, write:packages. delete:packages
-
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -29,7 +25,5 @@ jobs:
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:master
-            ghcr.io/${{ github.repository }}:commit-${{ github.sha }}        
-
-
+            ${{ github.repository }}:${{ github.ref_name }}
+            ${{ github.repository }}:commit-${{ github.sha }}
