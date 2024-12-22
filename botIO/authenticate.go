@@ -12,12 +12,15 @@ func Authenticate() (tgbotapi.UpdatesChannel, *tgbotapi.BotAPI) {
 		log.Panic().Err(err).Msg("Failed to authenticate")
 	}
 
-	bot.Debug = config.BotConfig.DebugMode
+	bot.Debug = false
+	if config.BotConfig.LogLevel == -1 {
+		bot.Debug = true
+	}
 
 	updates := tgbotapi.NewUpdate(0)
 	updates.Timeout = 60
 
-	log.Info().Int64("ID", bot.Self.ID).Str("username", bot.Self.UserName).Msg("Successfully authenticated to Telegram API")
+	log.Info().Int64("ID", bot.Self.ID).Str("username", bot.Self.UserName).Msg("Authenticated to Telegram API")
 
 	return bot.GetUpdatesChan(updates), bot
 

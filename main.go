@@ -1,18 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-
+	
 	"watn3y/steamsalty/config"
 )
 
 func main() {
-	fmt.Println("Starting SteamSalty...")
+	println("Starting SteamSalty...")
 
 	configureLogger()
 
@@ -23,13 +24,20 @@ func main() {
 }
 
 func configureLogger() {
+
+	zerolog.CallerMarshalFunc = func(pc uintptr, file string, line int) string {
+		const prefix = "steamsalty/"
+
+		index := strings.Index(file, prefix)
+		if index != -1 {
+			return file[index+len(prefix):] + ":" + strconv.Itoa(line)
+		}
+		return file + ":" + strconv.Itoa(line)
+	}
+
 	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.DateTime}
 
 	log.Logger = zerolog.New(output).With().Timestamp().Caller().Logger()
-
-	//! note that we overwrite the loglevel after loading the config in config/config.go. This is just the default
-	zerolog.SetGlobalLevel(zerolog.TraceLevel)
-
 	log.Info().Msg("Started Logger")
 
 }
