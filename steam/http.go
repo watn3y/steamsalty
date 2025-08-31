@@ -19,7 +19,7 @@ func GetComments(steamID uint64, start int, count int) (page CommentsPage) {
 
 	url, err := url.Parse(baseURL + strconv.FormatUint(steamID, 10))
 	if err != nil {
-		log.Error().Err(err).Msg("Unable to Parse SteamID into URL")
+		log.Error().Err(err).Msg("Failed to parse SteamID into URL")
 		return
 	}
 
@@ -30,7 +30,7 @@ func GetComments(steamID uint64, start int, count int) (page CommentsPage) {
 
 	resp, err := http.Get(url.String())
 	if err != nil || resp.StatusCode != http.StatusOK {
-		log.Error().Err(err).Int("Response Code", resp.StatusCode).Msg("Failed to get Comments")
+		log.Error().Err(err).Int("Response Code", resp.StatusCode).Msg("Failed to retrieve comments")
 	}
 
 	defer resp.Body.Close()
@@ -38,16 +38,16 @@ func GetComments(steamID uint64, start int, count int) (page CommentsPage) {
 	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to parse Comments")
+		log.Error().Err(err).Msg("Failed to parse comments")
 		log.Trace().Interface("Body", resp.Body)
 	}
 
 	err = json.Unmarshal(body, &page)
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to parse Comments as JSON")
+		log.Error().Err(err).Msg("Failed to parse comments as JSON")
 	}
 
-	log.Trace().Interface("CommentPage", page).Uint64("ProfileID", steamID).Msg("Got Comment Page")
+	log.Trace().Interface("CommentPage", page).Uint64("ProfileID", steamID).Msg("Retrieved Comment Page successfully")
 
 	return page
 }
@@ -56,7 +56,7 @@ func parseComments(rawComments CommentsPage) (comments []Comment) {
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(rawComments.CommentsHTML))
 	if err != nil {
-		log.Error().Err(err).Msg("Error while parsing CommentsHTML")
+		log.Error().Err(err).Msg("Failed to parse CommentsHTML")
 		return
 	}
 	doc.Find(".commentthread_comment.responsive_body_text").Each(func(i int, s *goquery.Selection) {
@@ -64,14 +64,14 @@ func parseComments(rawComments CommentsPage) (comments []Comment) {
 
 		parsedID, err := strconv.ParseUint(strings.TrimPrefix(s.AttrOr("id", ""), "comment_"), 10, 64)
 		if err != nil {
-			log.Error().Err(err).Msg("Error while parsing Comment ID")
+			log.Error().Err(err).Msg("Failed to parse Comment ID")
 			return
 		}
 		c.ID = parsedID
 
 		c.Timestamp, err = strconv.ParseInt(s.Find(".commentthread_comment_timestamp").AttrOr("data-timestamp", ""), 10, 64)
 		if err != nil {
-			log.Error().Err(err).Msg("Error while parsing Comment Timestamp")
+			log.Error().Err(err).Msg("Failed to parse Comment Timestamp")
 			return
 		}
 
@@ -85,6 +85,6 @@ func parseComments(rawComments CommentsPage) (comments []Comment) {
 	})
 
 	slices.Reverse(comments)
-	log.Trace().Interface("Comments", comments).Msg("Parsed Comment Page")
+	log.Trace().Interface("Comments", comments).Msg("Parsed comment page successfully")
 	return comments
 }

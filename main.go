@@ -38,6 +38,6 @@ func configureLogger() {
 	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.DateTime}
 
 	log.Logger = zerolog.New(output).With().Timestamp().Caller().Logger()
-	log.Info().Msg("Started Logger")
+	log.Info().Msg("Logger started successfully")
 
 }

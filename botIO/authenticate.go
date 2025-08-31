@@ -9,7 +9,7 @@ import (
 func Authenticate() (tgbotapi.UpdatesChannel, *tgbotapi.BotAPI) {
 	bot, err := tgbotapi.NewBotAPI(config.BotConfig.TelegramAPIToken)
 	if err != nil {
-		log.Panic().Err(err).Msg("Failed to authenticate")
+		log.Panic().Err(err).Msg("Failed to authenticate to Telegram")
 	}
 
 	bot.Debug = false
@@ -20,7 +20,7 @@ func Authenticate() (tgbotapi.UpdatesChannel, *tgbotapi.BotAPI) {
 	updates := tgbotapi.NewUpdate(0)
 	updates.Timeout = 60
 
-	log.Info().Int64("ID", bot.Self.ID).Str("username", bot.Self.UserName).Msg("Authenticated to Telegram API")
+	log.Info().Int64("ID", bot.Self.ID).Str("username", bot.Self.UserName).Msg("Authenticated to Telegram successfully")
 
 	return bot.GetUpdatesChan(updates), bot
 
