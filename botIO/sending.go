@@ -12,7 +12,7 @@ func SendMessage(message tgbotapi.MessageConfig, bot *tgbotapi.BotAPI) (result t
 		return
 	}
 
-	log.Info().Int64("chat", result.Chat.ID).Str("msg", result.Text).Msg("Sent message")
+	log.Info().Int64("chat", result.Chat.ID).Str("msg", result.Text).Msg("Sent message successfully")
 	log.Debug().Interface("msg", result).Msg("")
 
 	return result
@@ -25,7 +25,7 @@ func EditMessage(message tgbotapi.EditMessageTextConfig, bot *tgbotapi.BotAPI) (
 		return
 	}
 
-	log.Info().Int64("chat", result.Chat.ID).Str("msg", result.Text).Msg("Edited message")
+	log.Info().Int64("chat", result.Chat.ID).Str("msg", result.Text).Msg("Edited message successfully")
 	log.Debug().Interface("msg", result).Msg("")
 
 	return result
@@ -38,7 +38,7 @@ func SendVideo(message tgbotapi.VideoConfig, bot *tgbotapi.BotAPI) (result tgbot
 		return
 	}
 
-	log.Info().Int64("chat", result.Chat.ID).Msg("Sent video")
+	log.Info().Int64("chat", result.Chat.ID).Msg("Sent video successfully")
 	log.Debug().Interface("video", result).Msg("")
 
 	return result
@@ -51,7 +51,7 @@ func SendPhoto(message tgbotapi.PhotoConfig, bot *tgbotapi.BotAPI) (result tgbot
 		return
 	}
 
-	log.Info().Int64("chat", result.Chat.ID).Msg("Sent photo")
+	log.Info().Int64("chat", result.Chat.ID).Msg("Sent photo successfully")
 	log.Debug().Interface("photo", result).Msg("")
 
 	return result
@@ -64,7 +64,7 @@ func SendSticker(message tgbotapi.StickerConfig, bot *tgbotapi.BotAPI) (result t
 		return
 	}
 
-	log.Info().Int64("chat", result.Chat.ID).Msg("Sent sticker")
+	log.Info().Int64("chat", result.Chat.ID).Msg("Sent sticker successfully")
 	log.Debug().Interface("sticker", result).Msg("")
 
 	return result

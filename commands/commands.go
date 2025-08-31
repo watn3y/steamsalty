@@ -22,11 +22,11 @@ func SetBotCommands(bot *tgbotapi.BotAPI) {
 
 	result, err := bot.Request(commands)
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to set own commands")
+		log.Error().Err(err).Msg("Failed to publish commands to Telegram")
 		return
 	}
 
-	log.Debug().Interface("commands", result).Msg("Set own commands")
+	log.Debug().Interface("commands", result).Msg("Published commands to Telegram successfully")
 }
 
 func Commands(update tgbotapi.Update, bot *tgbotapi.BotAPI) {

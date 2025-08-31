@@ -18,10 +18,10 @@ func bot() {
 	go steam.StartWatchers(bot)
 
 	for update := range updates {
-		log.Debug().Interface("update", update).Msg("Received update")
+		log.Debug().Interface("update", update).Msg("Update received")
 
 		if update.Message == nil || update.Message.Text == "" {
-			log.Debug().Int("UpdateID", update.UpdateID).Msg("Unable to parse update")
+			log.Debug().Int("UpdateID", update.UpdateID).Msg("Failed to parse update")
 			continue
 		}
 		if update.Message.Time().UTC().Unix() < time.Now().UTC().Unix() {
@@ -30,7 +30,7 @@ func bot() {
 		}
 
 		if update.Message.IsCommand() {
-			log.Info().Int64("ChatID", update.Message.Chat.ID).Int64("UserID", update.Message.From.ID).Str("Text", update.Message.Text).Msg("Received Command")
+			log.Info().Int64("ChatID", update.Message.Chat.ID).Int64("UserID", update.Message.From.ID).Str("Text", update.Message.Text).Msg("Command received")
 			commands.Commands(update, bot)
 		}
 	}

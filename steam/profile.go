@@ -33,7 +33,7 @@ func StartWatchers(bot *tgbotapi.BotAPI) {
 }
 
 func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
-	log.Info().Uint64("SteamID", steamID).Msg("Started Watcher")
+	log.Info().Uint64("SteamID", steamID).Msg("Starting Watcher")
 
 	var newestProcessedComment int64 = 0
 
@@ -56,9 +56,9 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 		profileOwner := GetPlayerDetails(steamID)
 
 		for _, comment := range parseComments(currentCommentsPage) {
-			log.Debug().Interface("Comment", comment).Msg("Processing Comment")
+			log.Debug().Interface("Comment", comment).Msg("Processing comment")
 			if comment.Timestamp <= newestProcessedComment {
-				log.Debug().Uint64("CommentID", comment.ID).Msg("Skipping Comment")
+				log.Debug().Uint64("CommentID", comment.ID).Msg("Skipping comment")
 				continue
 			}
 
@@ -69,7 +69,7 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`, comment.AuthorProfileURL, comment.Author, profileOwner.ProfileURL, profileOwner.PersonaName) + "\n" +
 					"<blockquote>" + comment.Text + "</blockquote>",
 			}
-			log.Info().Interface("Comment", comment).Msg("Notifying about new Comment")
+			log.Info().Interface("Comment", comment).Msg("Notifying about new comment")
 			botIO.SendMessage(msg, bot)
 			time.Sleep(time.Minute / 20)
 		}
