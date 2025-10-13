@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.24.6-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.25.2-alpine AS builder
 
 WORKDIR /steamsalty
 
@@ -14,6 +14,9 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o ./steamsalty
 
 
 FROM scratch
+LABEL org.opencontainers.image.source=https://github.com/watn3y/steamsalty
+LABEL org.opencontainers.image.description="SteamSalty"
+LABEL org.opencontainers.image.licenses=GPL-3.0
 WORKDIR /app
 
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
