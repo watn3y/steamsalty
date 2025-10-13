@@ -1,6 +1,6 @@
 # SteamSalty
 
-SteamSalty notifies you on telegram about new comments on any steam profile.
+SteamSalty notifies you on telegram about new comments on any steam profile **with build in auto translation**.
 
 ## Running with Docker Compose
 
@@ -34,11 +34,15 @@ Grab a release from the [releases page](https://github.com/watn3y/steamsalty/rel
 > [!NOTE]  
 > For development purposes, SteamSalty supports loading environment variables from a .env file placed in the project root directory.
 
-| Variable                      | Description                                                                                                                                   | Default            | Required       |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------| ------------------ | -------------- |
-| `STEAMSALTY_LOGLEVEL`         | LogLevel as described [in the zerolog documentation](https://pkg.go.dev/github.com/rs/zerolog@v1.34.0#readme-simple-leveled-logging-example)  | 1 (Info)           | ❌             |
-| `STEAMSALTY_TELEGRAMAPITOKEN` | Telegram BotToken, get it from  [@BotFather on Telegram](https://t.me/BotFather)                                                              | None               | ✅             |
-| `STEAMSALTY_STEAMAPIKEY`      | Steam API Key, get it from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)                                             | None               | ✅             |
-| `STEAMSALTY_CHATID`           | Chat to notify about new comments                                                                                                             | None               | ✅             |
-| `STEAMSALTY_WATCHERS`         | SteamIDs (in SteamID64 format) to check for new profile comments                                                                              | None               | ✅             |
-| `STEAMSALTY_SLEEPINTERVAL`    | Amount of time to wait between requests to Steam in seconds                                                                                   | 60                 | ❌             |
+| Variable                        | Description                                                                                                                                                             | Default  | Required |
+|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|----------|
+| `STEAMSALTY_LOGLEVEL`           | LogLevel as described [in the zerolog documentation](https://pkg.go.dev/github.com/rs/zerolog@v1.34.0#readme-simple-leveled-logging-example)                            | 1 (Info) | ❌        |
+| `STEAMSALTY_SLEEPINTERVAL`      | Amount of time to wait between requests to Steam in seconds                                                                                                             | 60       | ❌        |
+| `STEAMSALTY_TRANSLATE_ENABLED`  | Whether to enable translation of comments                                                                                                                               | False    | ❌        |
+| `STEAMSALTY_TRANSLATE_LANGUAGE` | Language to translate as described [in the DeepL API documentation](https://developers.deepl.com/docs/getting-started/supported-languages#translation-target-languages) | EN-US    | ❌        |
+| `STEAMSALTY_CHATID`             | Chat to notify about new comments                                                                                                                                       | None     | ✅        |
+| `STEAMSALTY_WATCHERS`           | SteamIDs (in SteamID64 format) to check for new profile comments                                                                                                        | None     | ✅        |
+| `STEAMSALTY_TELEGRAMAPITOKEN`   | Telegram BotToken, get it from  [@BotFather on Telegram](https://t.me/BotFather)                                                                                        | None     | ✅        |
+| `STEAMSALTY_STEAMAPIKEY`        | Steam API Key, get it from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)                                                                       | None     | ✅        |
+| `STEAMSALTY_DEEPL_APIKEY`       | DeepL API Key, get it from [deepl.com/en/your-account/keys](https://www.deepl.com/en/your-account/keys)                                                                 | None     | ❌        |
+| `STEAMSALTY_DEEPL_FREETIER`     | Whether you are using the DeepL Free Tier                                                                                                                               | True     | ❌        |
