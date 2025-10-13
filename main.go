@@ -17,7 +17,7 @@ func main() {
 	println("Starting SteamSalty...")
 	configureLogger()
 	config.LoadConfig()
-	if config.BotConfig.TranslateEnabled {
+	if config.BotConfig.Translate.Enabled {
 		deepl.Init()
 	}
 

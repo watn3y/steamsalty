@@ -38,7 +38,7 @@ func Translate(text string) (translatedText string, sourceLanguage string, err e
 	log.Debug().Str("text", text).Msg("Starting translation")
 	req := translateRequest{
 		Text:       []string{text},
-		TargetLang: config.BotConfig.TranslateLanguage,
+		TargetLang: config.BotConfig.Translate.Language,
 	}
 
 	body, err := json.Marshal(req)
@@ -100,7 +100,7 @@ func getAndValidateLanguages() (err error) {
 		TargetLanguages[l.Language] = l.Name
 	}
 
-	if _, ok := TargetLanguages[config.BotConfig.TranslateLanguage]; !ok {
+	if _, ok := TargetLanguages[config.BotConfig.Translate.Language]; !ok {
 		return fmt.Errorf("Selected language not supported by DeepL")
 	}
 

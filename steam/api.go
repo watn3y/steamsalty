@@ -9,7 +9,7 @@ import (
 
 func GetPlayerDetails(steamID uint64) (summary steamapi.PlayerSummary) {
 
-	response, err := steamapi.GetPlayerSummaries([]uint64{steamID}, config.BotConfig.SteamAPIKey)
+	response, err := steamapi.GetPlayerSummaries([]uint64{steamID}, config.BotConfig.Steam.APIKey)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to retrive player summary")
 	}

@@ -1,13 +1,14 @@
 package botIO
 
 import (
+	"watn3y/steamsalty/config"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/rs/zerolog/log"
-	"watn3y/steamsalty/config"
 )
 
 func Authenticate() (tgbotapi.UpdatesChannel, *tgbotapi.BotAPI) {
-	bot, err := tgbotapi.NewBotAPI(config.BotConfig.TelegramAPIToken)
+	bot, err := tgbotapi.NewBotAPI(config.BotConfig.Telegram.APIToken)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to authenticate to Telegram")
 	}

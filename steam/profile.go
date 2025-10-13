@@ -69,9 +69,9 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 					"<blockquote>" + comment.Text + "</blockquote>",
 			}
 
-			if config.BotConfig.TranslateEnabled {
+			if config.BotConfig.Translate.Enabled {
 				translatedText, translatedTextLanguage, err := deepl.Translate(comment.Text)
-				if translatedTextLanguage == config.BotConfig.TranslateLanguage {
+				if translatedTextLanguage == config.BotConfig.Translate.Language {
 					continue
 				}
 				if err != nil {
