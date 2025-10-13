@@ -3,8 +3,8 @@ package config
 type config struct {
 	LogLevel int `env:"STEAMSALTY_LOGLEVEL, default=1"`
 
-	ChatID        int64    `env:"STEAMSALTY_CHATID, required`
-	Watchers      []uint64 `env:"STEAMSALTY_WATCHERS, required`
+	ChatID        int64    `env:"STEAMSALTY_CHATID, required"`
+	Watchers      []uint64 `env:"STEAMSALTY_WATCHERS, required"`
 	SleepInterval int      `env:"STEAMSALTY_SLEEPINTERVAL, default=60"`
 
 	Translate struct {
@@ -17,7 +17,7 @@ type config struct {
 	}
 
 	Steam struct {
-		APIKey string `env:"STEAMSALTY_STEAMAPIKEY, required`
+		APIKey string `env:"STEAMSALTY_STEAMAPIKEY, required"`
 	}
 
 	DeepL struct {
