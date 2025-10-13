@@ -12,8 +12,8 @@ type config struct {
 	SteamAPIKey       string   `env:"STEAMSALTY_STEAMAPIKEY" required:"true"`
 	
 	DeepL struct {
-		APIKey    string `env:"APIKEY"`
-		FreeTier  bool   `env:"FREETIER" default:"true"`
-	} `env:"STEAMSALTY_DEEPL_"`
+		APIKey    string `env:"STEAMSALTY_DEEPL_APIKEY"`
+		FreeTier  bool   `env:"STEAMSALTY_DEEPL_FREETIER" default:"true"`
+	} 
 }
 
