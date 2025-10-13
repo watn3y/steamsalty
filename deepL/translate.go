@@ -18,12 +18,12 @@ var TargetLanguages map[string]string
 func Init() {
 	log.Info().Msg("Translation is enabled, creating HTTP client for DeepL API")
 	baseURL := baseURLPro
-	if config.BotConfig.DeepLFreeTier {
+	if config.BotConfig.DeepL.FreeTier {
 		baseURL = baseURLFree
 	}
 
 	client = &apiClient{
-		authKey:    config.BotConfig.DeepLAPIKey,
+		authKey:    config.BotConfig.DeepL.APIKey,
 		baseURL:    baseURL,
 		httpClient: &http.Client{Timeout: 30 * time.Second},
 	}

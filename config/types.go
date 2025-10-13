@@ -8,9 +8,12 @@ type config struct {
 	Watchers          []uint64 `env:"STEAMSALTY_WATCHERS" required:"true"`
 	TranslateEnabled  bool     `env:"STEAMSALTY_TRANSLATE_ENABLED" default:"false"`
 	TranslateLanguage string   `env:"STEAMSALTY_TRANSLATE_LANGUAGE" default:"EN-US"`
-
-	TelegramAPIToken string `env:"STEAMSALTY_TELEGRAMAPITOKEN" required:"true"`
-	SteamAPIKey      string `env:"STEAMSALTY_STEAMAPIKEY" required:"true"`
-	DeepLAPIKey      string `env:"STEAMSALTY_DEEPLAPIKEY"`
-	DeepLFreeTier    bool   `env:"STEAMSALTY_DEEPLAPIFREETIER" default:"true"`
+	TelegramAPIToken  string   `env:"STEAMSALTY_TELEGRAMAPITOKEN" required:"true"`
+	SteamAPIKey       string   `env:"STEAMSALTY_STEAMAPIKEY" required:"true"`
+	
+	DeepL struct {
+		APIKey    string `env:"APIKEY"`
+		FreeTier  bool   `env:"FREETIER" default:"true"`
+	} `env:"STEAMSALTY_DEEPL_"`
 }
+
