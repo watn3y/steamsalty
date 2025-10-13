@@ -50,3 +50,9 @@ Grab a release from the [releases page](https://github.com/watn3y/steamsalty/rel
 | `STEAMSALTY_STEAMAPIKEY`        | Steam API Key, get it from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)                                                                       | None     | ✅        | A7B3C9D2E5F1A4B8C6D9E2F5A8B1C4D7E0F3A6B9      |
 | `STEAMSALTY_DEEPL_APIKEY`       | DeepL API Key, get it from [deepl.com/en/your-account/keys](https://www.deepl.com/en/your-account/keys)                                                                 | None     | ❌        | a1b2c3d4-56e7-89f0-a1b2-c3d4e5f6a7b8:fx       |
 | `STEAMSALTY_DEEPL_FREETIER`     | Whether you are using the DeepL Free Tier                                                                                                                               | True     | ❌        | True, False                                   |
+
+## Nice to know
+
+### Semantic Versioning
+
+This project does it's best to follow [Semantic Versioning](https://semver.org/#semantic-versioning-200), however I can't guarantee anything.
