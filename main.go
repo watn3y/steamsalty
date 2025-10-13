@@ -8,16 +8,18 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	
+
 	"watn3y/steamsalty/config"
+	deepl "watn3y/steamsalty/deepL"
 )
 
 func main() {
 	println("Starting SteamSalty...")
-
 	configureLogger()
-
 	config.LoadConfig()
+	if config.BotConfig.TranslateEnabled {
+		deepl.Init()
+	}
 
 	bot()
 

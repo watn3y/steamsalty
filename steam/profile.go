@@ -3,19 +3,18 @@ package steam
 import (
 	"fmt"
 	"math"
-
 	"strings"
 	"sync"
 	"time"
-
 	"watn3y/steamsalty/botIO"
 	"watn3y/steamsalty/config"
+	deepl "watn3y/steamsalty/deepL"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/rs/zerolog/log"
 )
 
-var steamContentCheckText string = "This comment is awaiting analysis by our automated content check system. It will be temporarily hidden until we verify that it does not contain harmful content (e.g. links to websites that attempt to steal information)."
+const steamContentCheckText string = "This comment is awaiting analysis by our automated content check system. It will be temporarily hidden until we verify that it does not contain harmful content (e.g. links to websites that attempt to steal information)."
 
 func StartWatchers(bot *tgbotapi.BotAPI) {
 
@@ -69,9 +68,27 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`, comment.AuthorProfileURL, comment.Author, profileOwner.ProfileURL, profileOwner.PersonaName) + "\n" +
 					"<blockquote>" + comment.Text + "</blockquote>",
 			}
+
+			if config.BotConfig.TranslateEnabled {
+				translatedText, translatedTextLanguage, err := deepl.Translate(comment.Text)
+				if translatedTextLanguage == config.BotConfig.TranslateLanguage {
+					continue
+				}
+				if err != nil {
+					log.Error().Err(err).Msg("Failed to translate comment, continuing without translation")
+					msg.Text += "\n" + "Translation failed"
+
+				} else {
+					msg.Text += "\n" +
+						fmt.Sprintf(`Translated from %s:`, deepl.SourceLanguages[translatedTextLanguage]) + "\n" +
+						"<blockquote>" + translatedText + "</blockquote>"
+				}
+
+			}
+
 			log.Info().Interface("Comment", comment).Msg("Notifying about new comment")
 			botIO.SendMessage(msg, bot)
-			time.Sleep(time.Minute / 20)
+			time.Sleep(time.Second * 3) //I have no Idea why this is here
 		}
 
 		newestProcessedComment = currentCommentsPage.TimeLastPost
