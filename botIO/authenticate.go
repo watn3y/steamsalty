@@ -9,7 +9,7 @@ import (
 func Authenticate() (tgbotapi.UpdatesChannel, *tgbotapi.BotAPI) {
 	bot, err := tgbotapi.NewBotAPI(config.BotConfig.TelegramAPIToken)
 	if err != nil {
-		log.Panic().Err(err).Msg("Failed to authenticate to Telegram")
+		log.Fatal().Err(err).Msg("Failed to authenticate to Telegram")
 	}
 
 	bot.Debug = false

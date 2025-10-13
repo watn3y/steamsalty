@@ -39,7 +39,6 @@ func GetComments(steamID uint64, start int, count int) (page CommentsPage) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to parse comments")
-		log.Trace().Interface("Body", resp.Body)
 	}
 
 	err = json.Unmarshal(body, &page)
