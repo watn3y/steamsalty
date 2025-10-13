@@ -1,6 +1,6 @@
 # SteamSalty
 
-SteamSalty notifies you on telegram about new comments on any steam profile **with build in auto translation**.
+SteamSalty notifies you on telegram about new comments on any steam profile **with built in auto translation**.
 
 ## Running with Docker Compose
 
