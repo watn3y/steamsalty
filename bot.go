@@ -24,7 +24,7 @@ func bot() {
 			log.Debug().Int("UpdateID", update.UpdateID).Msg("Failed to parse update")
 			continue
 		}
-		if update.Message.Time().UTC().Unix() < time.Now().UTC().Unix() {
+		if update.Message.Time().UTC().Unix()+60 < time.Now().UTC().Unix() {
 			log.Debug().Int("UpdateID", update.UpdateID).Msg("Skipping old update")
 			continue
 		}
