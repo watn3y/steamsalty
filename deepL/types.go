@@ -14,14 +14,15 @@ type translateResponse struct {
 type translateRequest struct {
 	Text       []string `json:"text"`
 	TargetLang string   `json:"target_lang"`
+	Formality  string   `json:"formality"`
+	ModelType  string   `json:"model_type"`
 }
 
 type languagesResponse []struct {
-	Language string `json:"language"`
-	Name     string `json:"name"`
+	Language          string `json:"language"`
+	Name              string `json:"name"`
 	SupportsFormality bool   `json:"supports_formality"` //unused
 }
-
 
 type apiClient struct {
 	authKey    string

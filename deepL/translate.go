@@ -39,6 +39,8 @@ func Translate(text string) (translatedText string, sourceLanguage string, err e
 	req := translateRequest{
 		Text:       []string{text},
 		TargetLang: config.BotConfig.Translate.Language,
+		Formality:  "prefer_less",
+		ModelType:  "quality_optimized",
 	}
 
 	body, err := json.Marshal(req)
