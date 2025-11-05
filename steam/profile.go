@@ -71,19 +71,15 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 
 			if config.BotConfig.Translate.Enabled {
 				translatedText, translatedTextLanguage, err := deepl.Translate(comment.Text)
-				if translatedTextLanguage == config.BotConfig.Translate.Language {
-					continue
-				}
 				if err != nil {
 					log.Error().Err(err).Msg("Failed to translate comment, continuing without translation")
 					msg.Text += "\n" + "Translation failed"
 
-				} else {
+				} else if !languageMatches(translatedTextLanguage, config.BotConfig.Translate.Language) {
 					msg.Text += "\n" +
 						fmt.Sprintf(`Translated from %s:`, deepl.SourceLanguages[translatedTextLanguage]) + "\n" +
 						"<blockquote>" + translatedText + "</blockquote>"
 				}
-
 			}
 
 			log.Info().Interface("Comment", comment).Msg("Notifying about new comment")
@@ -94,4 +90,19 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 		newestProcessedComment = currentCommentsPage.TimeLastPost
 		time.Sleep(sleeptime)
 	}
+}
+
+func languageMatches(sourceLanguage, targetLang string) (languageMatches bool) {
+	apiUpper := strings.ToUpper(sourceLanguage)
+	configUpper := strings.ToUpper(targetLang)
+
+	if apiUpper == configUpper {
+		return true
+	}
+
+	if strings.HasPrefix(configUpper, apiUpper+"-") {
+		return true
+	}
+
+	return false
 }
