@@ -1,0 +1,37 @@
+package main
+
+import (
+	"time"
+
+	"watn3y/steamsalty/botIO"
+	"watn3y/steamsalty/commands"
+	"watn3y/steamsalty/steam"
+
+	"github.com/rs/zerolog/log"
+)
+
+func bot() {
+	updates, bot := botIO.Authenticate()
+
+	go commands.SetBotCommands(bot)
+
+	go steam.StartWatchers(bot)
+
+	for update := range updates {
+		log.Debug().Interface("update", update).Msg("Update received")
+
+		if update.Message == nil || update.Message.Text == "" {
+			log.Debug().Int("UpdateID", update.UpdateID).Msg("Failed to parse update")
+			continue
+		}
+		if update.Message.Time().UTC().Unix()+60 < time.Now().UTC().Unix() {
+			log.Debug().Int("UpdateID", update.UpdateID).Msg("Skipping old update")
+			continue
+		}
+
+		if update.Message.IsCommand() {
+			log.Info().Int64("ChatID", update.Message.Chat.ID).Int64("UserID", update.Message.From.ID).Str("Text", update.Message.Text).Msg("Command received")
+			commands.Commands(update, bot)
+		}
+	}
+}
