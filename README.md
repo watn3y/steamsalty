@@ -2,6 +2,11 @@
 
 SteamSalty notifies you on telegram about new comments on any steam profile **with built in auto translation**.
 
+> [!IMPORTANT]  
+> The version of this repository you are seeing is likely a mirror.
+>
+> If you want to contribute any changes please head over to [git.watn3y.de](https://git.watn3y.de/watn3y/steamsalty) and register an account.
+
 ## Running with Docker Compose
 
 Docker image: <https://hub.docker.com/r/watn3y/steamsalty>
@@ -11,7 +16,7 @@ Example compose file:
 ```yaml
 services:
   steamsalty:
-    image: watn3y/steamsalty:latest # use :<branchname> to be up-to-date with any branch 
+    image: watn3y/steamsalty:latest
     container_name: steamsalty
     restart: unless-stopped
     volumes:
@@ -31,7 +36,7 @@ services:
 
 ## Running on Linux
 
-Grab a release from the [releases page](https://github.com/watn3y/steamsalty/releases). Make sure to set your  [environment variables](#environment-variables) accordingly.
+Grab a release from the [releases page](https://git.watn3y.de/watn3y/steamsalty/releases). Make sure to set your  [environment variables](#environment-variables) accordingly.
 
 ## Environment Variables
 
