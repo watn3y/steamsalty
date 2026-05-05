@@ -14,8 +14,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o ./steamsalty
 
 
 FROM scratch
-LABEL org.opencontainers.image.source=https://github.com/watn3y/steamsalty
-LABEL org.opencontainers.image.description="SteamSalty"
+LABEL org.opencontainers.image.source=https://git.watn3y.de/watn3y/steamsalty
 LABEL org.opencontainers.image.licenses=GPL-3.0
 WORKDIR /app
 
