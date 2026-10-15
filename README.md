@@ -47,7 +47,7 @@ Grab a release from the [releases page](https://git.watn3y.de/watn3y/steamsalty/
 > [!NOTE]  
 > For development purposes, SteamSalty supports loading environment variables from a .env file placed in the project root directory.
 >
-> Leave optional variables unset to use their default. Setting one to an empty value (e.g. `STEAMSALTY_STEAM_SLEEPINTERVAL=`) sets it to 0, False or an empty string instead.
+> Optional variables that are unset or empty use their default.
 
 | Variable                           | Description                                                                                                                                                                 | Default  | Required | Example                                       |
 |------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|----------|-----------------------------------------------|
@@ -56,7 +56,7 @@ Grab a release from the [releases page](https://git.watn3y.de/watn3y/steamsalty/
 | `STEAMSALTY_TELEGRAM_CHATID`       | Chat to notify about new comments                                                                                                                                           | None     | ✅        | -1001234567890                                |
 | `STEAMSALTY_STEAM_APIKEY`          | Steam API Key, get it from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)                                                                           | None     | ✅        | A7B3C9D2E5F1A4B8C6D9E2F5A8B1C4D7E0F3A6B9      |
 | `STEAMSALTY_STEAM_WATCHEDPROFILES` | SteamIDs (in SteamID64 format) to check for new profile comments                                                                                                            | None     | ✅        | 76561198012345678,76561198087654321           |
-| `STEAMSALTY_STEAM_SLEEPINTERVAL`   | Amount of time to wait between requests to Steam in seconds                                                                                                                 | 60       | ❌        | 60                                            |
+| `STEAMSALTY_STEAM_SLEEPINTERVAL`   | Amount of time to wait between requests to Steam in seconds, at least 1                                                                                                     | 60       | ❌        | 60                                            |
 | `STEAMSALTY_DEEPL_ENABLED`         | Whether to enable translation of comments                                                                                                                                   | False    | ❌        | True, False                                   |
 | `STEAMSALTY_DEEPL_TARGETLANGUAGE`  | Language to translate to, as described [in the DeepL API documentation](https://developers.deepl.com/docs/getting-started/supported-languages#translation-target-languages) | EN-US    | ❌        | EN-US, DE                                     |
 | `STEAMSALTY_DEEPL_APIKEY`          | DeepL API Key, get it from [deepl.com/en/your-account/keys](https://www.deepl.com/en/your-account/keys). Required if `STEAMSALTY_DEEPL_ENABLED` is True                     | None     | ❌        | a1b2c3d4-56e7-89f0-a1b2-c3d4e5f6a7b8:fx       |
