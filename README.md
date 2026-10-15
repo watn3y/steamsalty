@@ -67,3 +67,7 @@ Grab a release from the [releases page](https://git.watn3y.de/watn3y/steamsalty/
 ### Semantic Versioning
 
 This project does it's best to follow [Semantic Versioning](https://semver.org/#semantic-versioning-200), however I can't guarantee anything.
+
+### AI Disclosure
+
+AI was used in the process of creating this project. Mainly for the Go unit tests.
