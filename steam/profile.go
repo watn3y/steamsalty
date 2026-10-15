@@ -2,7 +2,9 @@ package steam
 
 import (
 	"fmt"
+	"html"
 	"math"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -20,11 +22,11 @@ func StartWatchers(bot *tgbotapi.BotAPI) {
 
 	var wg sync.WaitGroup
 
-	for _, steamID := range config.BotConfig.Watchers {
+	for _, steamID := range config.BotConfig.Steam.WatchedProfiles {
 		wg.Add(1)
 		go func(steamID uint64) {
 			defer wg.Done()
-			watcher(bot, steamID, time.Duration(config.BotConfig.SleepInterval)*time.Second)
+			watcher(bot, steamID, time.Duration(config.BotConfig.Steam.SleepInterval)*time.Second)
 		}(steamID)
 	}
 
@@ -37,7 +39,15 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 	var newestProcessedComment int64 = 0
 
 	for {
-		currentCommentsPage := GetComments(steamID, 0, math.MaxInt32)
+		currentCommentsPage, err := GetComments(steamID, 0, math.MaxInt32)
+		if err != nil {
+			// A failed request says nothing about new comments. Leave newestProcessedComment
+			// untouched so anything posted during the outage is picked up by the next successful poll.
+			log.Warn().Err(err).Uint64("ProfileID", steamID).Msg("Failed to retrieve comments, retrying in " + sleeptime.String())
+			time.Sleep(sleeptime)
+			continue
+		}
+
 		if newestProcessedComment == 0 || newestProcessedComment == currentCommentsPage.TimeLastPost {
 			newestProcessedComment = currentCommentsPage.TimeLastPost
 			time.Sleep(sleeptime)
@@ -52,7 +62,13 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 
 		log.Info().Uint64("ProfileID", steamID).Msg("Found new comment(s)")
 
-		profileOwner := GetPlayerDetails(steamID)
+		profileOwner, err := GetPlayerDetails(steamID)
+		if err != nil {
+			// Still notify; name the profile by its SteamID instead of the persona name.
+			log.Error().Err(err).Uint64("ProfileID", steamID).Msg("Failed to retrieve profile owner, using SteamID in notification")
+			profileOwner.PersonaName = strconv.FormatUint(steamID, 10)
+			profileOwner.ProfileURL = "https://steamcommunity.com/profiles/" + strconv.FormatUint(steamID, 10) + "/"
+		}
 
 		for _, comment := range parseComments(currentCommentsPage) {
 			log.Debug().Interface("Comment", comment).Msg("Processing comment")
@@ -62,23 +78,25 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 			}
 
 			msg := tgbotapi.MessageConfig{
-				BaseChat:              tgbotapi.BaseChat{ChatID: config.BotConfig.ChatID},
+				BaseChat:              tgbotapi.BaseChat{ChatID: config.BotConfig.Telegram.ChatID},
 				ParseMode:             "HTML",
 				DisableWebPagePreview: true,
-				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`, comment.AuthorProfileURL, comment.Author, profileOwner.ProfileURL, profileOwner.PersonaName) + "\n" +
-					"<blockquote>" + comment.Text + "</blockquote>",
+				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`,
+					html.EscapeString(comment.AuthorProfileURL), html.EscapeString(comment.Author),
+					html.EscapeString(profileOwner.ProfileURL), html.EscapeString(profileOwner.PersonaName)) + "\n" +
+					"<blockquote>" + html.EscapeString(comment.Text) + "</blockquote>",
 			}
 
-			if config.BotConfig.Translate.Enabled {
+			if config.BotConfig.DeepL.Enabled {
 				translatedText, translatedTextLanguage, err := deepl.Translate(comment.Text)
 				if err != nil {
 					log.Error().Err(err).Msg("Failed to translate comment, continuing without translation")
 					msg.Text += "\n" + "Translation failed"
 
-				} else if !languageMatches(translatedTextLanguage, config.BotConfig.Translate.Language) {
+				} else if !languageMatches(translatedTextLanguage, config.BotConfig.DeepL.TargetLanguage) && strings.TrimSpace(comment.Text) != strings.TrimSpace(translatedText) {
 					msg.Text += "\n" +
-						fmt.Sprintf(`Translated from %s:`, deepl.SourceLanguages[translatedTextLanguage]) + "\n" +
-						"<blockquote>" + translatedText + "</blockquote>"
+						fmt.Sprintf(`Translated from %s:`, html.EscapeString(deepl.SourceLanguages[translatedTextLanguage])) + "\n" +
+						"<blockquote>" + html.EscapeString(translatedText) + "</blockquote>"
 				}
 			}
 

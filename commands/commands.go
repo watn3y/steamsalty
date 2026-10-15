@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"html"
 	"strconv"
 	"strings"
 	"time"
@@ -54,24 +55,36 @@ func startGithub(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 }
 
 func info(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
-	if update.Message.Chat.ID != config.BotConfig.ChatID {
+	if update.Message.Chat.ID != config.BotConfig.Telegram.ChatID {
 		return
 	}
 
 	textInfo := "<b>Watching profiles:</b> " + "\n"
 
-	for _, steamID := range config.BotConfig.Watchers {
-		profile := steam.GetPlayerDetails(steamID)
-		comments := steam.GetComments(steamID, 0, 0)
-
-		lastComment := "never :("
-		if comments.TimeLastPost > 0 {
-			lastComment = time.Unix(comments.TimeLastPost, 0).Format(time.RFC1123)
+	for _, steamID := range config.BotConfig.Steam.WatchedProfiles {
+		profile, err := steam.GetPlayerDetails(steamID)
+		if err != nil {
+			log.Error().Err(err).Uint64("ProfileID", steamID).Msg("Failed to retrieve player summary, using SteamID")
+			profile.PersonaName = strconv.FormatUint(steamID, 10)
+			profile.ProfileURL = "https://steamcommunity.com/profiles/" + strconv.FormatUint(steamID, 10) + "/"
 		}
 
-		textInfo += fmt.Sprintf(`<b><a href="%s">%s</a></b>:`, profile.ProfileURL, profile.PersonaName) + "\n" +
+		lastComment := "never :("
+		commentCount := "unknown"
+		comments, err := steam.GetComments(steamID, 0, 0)
+		if err != nil {
+			log.Error().Err(err).Uint64("ProfileID", steamID).Msg("Failed to retrieve comments")
+			lastComment = "unknown (failed to reach Steam)"
+		} else {
+			commentCount = strconv.Itoa(comments.TotalCount)
+			if comments.TimeLastPost > 0 {
+				lastComment = time.Unix(comments.TimeLastPost, 0).Format(time.RFC1123)
+			}
+		}
+
+		textInfo += fmt.Sprintf(`<b><a href="%s">%s</a></b>:`, html.EscapeString(profile.ProfileURL), html.EscapeString(profile.PersonaName)) + "\n" +
 			fmt.Sprintf(`Last Comment: %s`, lastComment) + "\n" +
-			fmt.Sprintf(`Number of Comments: %s`, strconv.Itoa(comments.TotalCount)) + "\n\n"
+			fmt.Sprintf(`Number of Comments: %s`, commentCount) + "\n\n"
 	}
 
 	message := tgbotapi.MessageConfig{
