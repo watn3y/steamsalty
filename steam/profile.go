@@ -3,6 +3,7 @@ package steam
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -37,7 +38,15 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 	var newestProcessedComment int64 = 0
 
 	for {
-		currentCommentsPage := GetComments(steamID, 0, math.MaxInt32)
+		currentCommentsPage, err := GetComments(steamID, 0, math.MaxInt32)
+		if err != nil {
+			// A failed request says nothing about new comments. Leave newestProcessedComment
+			// untouched so anything posted during the outage is picked up by the next successful poll.
+			log.Warn().Err(err).Uint64("ProfileID", steamID).Msg("Failed to retrieve comments, retrying in " + sleeptime.String())
+			time.Sleep(sleeptime)
+			continue
+		}
+
 		if newestProcessedComment == 0 || newestProcessedComment == currentCommentsPage.TimeLastPost {
 			newestProcessedComment = currentCommentsPage.TimeLastPost
 			time.Sleep(sleeptime)
@@ -52,7 +61,13 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 
 		log.Info().Uint64("ProfileID", steamID).Msg("Found new comment(s)")
 
-		profileOwner := GetPlayerDetails(steamID)
+		profileOwner, err := GetPlayerDetails(steamID)
+		if err != nil {
+			// Still notify; name the profile by its SteamID instead of the persona name.
+			log.Error().Err(err).Uint64("ProfileID", steamID).Msg("Failed to retrieve profile owner, using SteamID in notification")
+			profileOwner.PersonaName = strconv.FormatUint(steamID, 10)
+			profileOwner.ProfileURL = "https://steamcommunity.com/profiles/" + strconv.FormatUint(steamID, 10) + "/"
+		}
 
 		for _, comment := range parseComments(currentCommentsPage) {
 			log.Debug().Interface("Comment", comment).Msg("Processing comment")
