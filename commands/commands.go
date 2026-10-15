@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"html"
 	"strconv"
 	"strings"
 	"time"
@@ -81,7 +82,7 @@ func info(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 			}
 		}
 
-		textInfo += fmt.Sprintf(`<b><a href="%s">%s</a></b>:`, profile.ProfileURL, profile.PersonaName) + "\n" +
+		textInfo += fmt.Sprintf(`<b><a href="%s">%s</a></b>:`, html.EscapeString(profile.ProfileURL), html.EscapeString(profile.PersonaName)) + "\n" +
 			fmt.Sprintf(`Last Comment: %s`, lastComment) + "\n" +
 			fmt.Sprintf(`Number of Comments: %s`, commentCount) + "\n\n"
 	}

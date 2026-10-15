@@ -2,6 +2,7 @@ package steam
 
 import (
 	"fmt"
+	"html"
 	"math"
 	"strconv"
 	"strings"
@@ -80,8 +81,10 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 				BaseChat:              tgbotapi.BaseChat{ChatID: config.BotConfig.ChatID},
 				ParseMode:             "HTML",
 				DisableWebPagePreview: true,
-				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`, comment.AuthorProfileURL, comment.Author, profileOwner.ProfileURL, profileOwner.PersonaName) + "\n" +
-					"<blockquote>" + comment.Text + "</blockquote>",
+				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`,
+					html.EscapeString(comment.AuthorProfileURL), html.EscapeString(comment.Author),
+					html.EscapeString(profileOwner.ProfileURL), html.EscapeString(profileOwner.PersonaName)) + "\n" +
+					"<blockquote>" + html.EscapeString(comment.Text) + "</blockquote>",
 			}
 
 			if config.BotConfig.Translate.Enabled {
@@ -90,10 +93,10 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 					log.Error().Err(err).Msg("Failed to translate comment, continuing without translation")
 					msg.Text += "\n" + "Translation failed"
 
-				} else if !languageMatches(translatedTextLanguage, config.BotConfig.Translate.Language) && strings.TrimSpace(comment.Text) != strings.TrimSpace(translatedText)  {
+				} else if !languageMatches(translatedTextLanguage, config.BotConfig.Translate.Language) && strings.TrimSpace(comment.Text) != strings.TrimSpace(translatedText) {
 					msg.Text += "\n" +
-						fmt.Sprintf(`Translated from %s:`, deepl.SourceLanguages[translatedTextLanguage]) + "\n" +
-						"<blockquote>" + translatedText + "</blockquote>"
+						fmt.Sprintf(`Translated from %s:`, html.EscapeString(deepl.SourceLanguages[translatedTextLanguage])) + "\n" +
+						"<blockquote>" + html.EscapeString(translatedText) + "</blockquote>"
 				}
 			}
 

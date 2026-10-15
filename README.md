@@ -10,6 +10,7 @@ SteamSalty notifies you on telegram about new comments on any steam profile **wi
 ## Running with Docker Compose
 
 The Docker image is available on these registries.
+
 - [git.watn3y.de](https://git.watn3y.de/watn3y/-/packages/container/steamsalty/versions) - includes all tags
 - [Docker Hub](https://hub.docker.com/r/watn3y/steamsalty) - includes only releases
 
