@@ -17,7 +17,7 @@ type config struct {
 	}
 
 	Steam struct {
-		APIKey string `env:"STEAMSALTY_STEAMAPIKEY, required"`
+		APIKey string `env:"STEAMSALTY_STEAM_APIKEY, required"`
 	}
 
 	DeepL struct {

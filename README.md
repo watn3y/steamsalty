@@ -32,7 +32,7 @@ services:
       #- STEAMSALTY_TRANSLATE_ENABLED=
       #- STEAMSALTY_TRANSLATE_LANGUAGE=
       - STEAMSALTY_TELEGRAM_APITOKEN=
-      - STEAMSALTY_STEAMAPIKEY=
+      - STEAMSALTY_STEAM_APIKEY=
       #- STEAMSALTY_DEEPL_APIKEY=
       #- STEAMSALTY_DEEPL_FREETIER=
 ```
@@ -55,7 +55,7 @@ Grab a release from the [releases page](https://git.watn3y.de/watn3y/steamsalty/
 | `STEAMSALTY_CHATID`             | Chat to notify about new comments                                                                                                                                       | None     | ✅        | -1001234567890                                |
 | `STEAMSALTY_WATCHERS`           | SteamIDs (in SteamID64 format) to check for new profile comments                                                                                                        | None     | ✅        | 76561198012345678,76561198087654321           |
 | `STEAMSALTY_TELEGRAMAPITOKEN`   | Telegram BotToken, get it from  [@BotFather on Telegram](https://t.me/BotFather)                                                                                        | None     | ✅        | 1234567890:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw |
-| `STEAMSALTY_STEAMAPIKEY`        | Steam API Key, get it from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)                                                                       | None     | ✅        | A7B3C9D2E5F1A4B8C6D9E2F5A8B1C4D7E0F3A6B9      |
+| `STEAMSALTY_STEAM_APIKEY`        | Steam API Key, get it from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)                                                                       | None     | ✅        | A7B3C9D2E5F1A4B8C6D9E2F5A8B1C4D7E0F3A6B9      |
 | `STEAMSALTY_DEEPL_APIKEY`       | DeepL API Key, get it from [deepl.com/en/your-account/keys](https://www.deepl.com/en/your-account/keys)                                                                 | None     | ❌        | a1b2c3d4-56e7-89f0-a1b2-c3d4e5f6a7b8:fx       |
 | `STEAMSALTY_DEEPL_FREETIER`     | Whether you are using the DeepL Free Tier                                                                                                                               | True     | ❌        | True, False                                   |
 
