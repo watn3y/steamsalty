@@ -55,13 +55,13 @@ func startGithub(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 }
 
 func info(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
-	if update.Message.Chat.ID != config.BotConfig.ChatID {
+	if update.Message.Chat.ID != config.BotConfig.Telegram.ChatID {
 		return
 	}
 
 	textInfo := "<b>Watching profiles:</b> " + "\n"
 
-	for _, steamID := range config.BotConfig.Watchers {
+	for _, steamID := range config.BotConfig.Steam.WatchedProfiles {
 		profile, err := steam.GetPlayerDetails(steamID)
 		if err != nil {
 			log.Error().Err(err).Uint64("ProfileID", steamID).Msg("Failed to retrieve player summary, using SteamID")

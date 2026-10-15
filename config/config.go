@@ -24,7 +24,7 @@ func LoadConfig() {
 	}
 	zerolog.SetGlobalLevel(zerolog.Level(BotConfig.LogLevel))
 
-	BotConfig.Translate.Language = strings.ToUpper(BotConfig.Translate.Language)
+	BotConfig.DeepL.TargetLanguage = strings.ToUpper(BotConfig.DeepL.TargetLanguage)
 
 	log.Info().Msg("Config loaded successfully")
 	log.Debug().Interface("config", BotConfig).Msg("")

@@ -22,11 +22,11 @@ func StartWatchers(bot *tgbotapi.BotAPI) {
 
 	var wg sync.WaitGroup
 
-	for _, steamID := range config.BotConfig.Watchers {
+	for _, steamID := range config.BotConfig.Steam.WatchedProfiles {
 		wg.Add(1)
 		go func(steamID uint64) {
 			defer wg.Done()
-			watcher(bot, steamID, time.Duration(config.BotConfig.SleepInterval)*time.Second)
+			watcher(bot, steamID, time.Duration(config.BotConfig.Steam.SleepInterval)*time.Second)
 		}(steamID)
 	}
 
@@ -78,7 +78,7 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 			}
 
 			msg := tgbotapi.MessageConfig{
-				BaseChat:              tgbotapi.BaseChat{ChatID: config.BotConfig.ChatID},
+				BaseChat:              tgbotapi.BaseChat{ChatID: config.BotConfig.Telegram.ChatID},
 				ParseMode:             "HTML",
 				DisableWebPagePreview: true,
 				Text: fmt.Sprintf(`<b><a href="%s">%s</a> just commented on <a href="%s">%s</a>'s profile:</b>`,
@@ -87,13 +87,13 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 					"<blockquote>" + html.EscapeString(comment.Text) + "</blockquote>",
 			}
 
-			if config.BotConfig.Translate.Enabled {
+			if config.BotConfig.DeepL.Enabled {
 				translatedText, translatedTextLanguage, err := deepl.Translate(comment.Text)
 				if err != nil {
 					log.Error().Err(err).Msg("Failed to translate comment, continuing without translation")
 					msg.Text += "\n" + "Translation failed"
 
-				} else if !languageMatches(translatedTextLanguage, config.BotConfig.Translate.Language) && strings.TrimSpace(comment.Text) != strings.TrimSpace(translatedText) {
+				} else if !languageMatches(translatedTextLanguage, config.BotConfig.DeepL.TargetLanguage) && strings.TrimSpace(comment.Text) != strings.TrimSpace(translatedText) {
 					msg.Text += "\n" +
 						fmt.Sprintf(`Translated from %s:`, html.EscapeString(deepl.SourceLanguages[translatedTextLanguage])) + "\n" +
 						"<blockquote>" + html.EscapeString(translatedText) + "</blockquote>"
