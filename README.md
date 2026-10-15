@@ -19,7 +19,7 @@ Example compose file:
 ```yaml
 services:
   steamsalty:
-    image: watn3y/steamsalty:v2.0.0
+    image: watn3y/steamsalty:v2.0.1
     # image: git.watn3y.de/watn3y/steamsalty:latest # Use this to be up to date with the master branch on git
     container_name: steamsalty
     restart: unless-stopped
