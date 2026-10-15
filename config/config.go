@@ -32,7 +32,6 @@ func LoadConfig() {
 
 }
 
-
 func load(env envconfig.Lookuper) (config, error) {
 	var c config
 	err := envconfig.ProcessWith(context.Background(), &envconfig.Config{
@@ -45,14 +44,12 @@ func load(env envconfig.Lookuper) (config, error) {
 
 	c.DeepL.TargetLanguage = strings.ToUpper(c.DeepL.TargetLanguage)
 
-
 	if c.Steam.SleepInterval < 1 {
 		return config{}, fmt.Errorf("STEAMSALTY_STEAM_SLEEPINTERVAL must be at least 1 second, got %d", c.Steam.SleepInterval)
 	}
 
 	return c, nil
 }
-
 
 type nonEmptyLookuper struct{ envconfig.Lookuper }
 
