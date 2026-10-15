@@ -90,7 +90,7 @@ func watcher(bot *tgbotapi.BotAPI, steamID uint64, sleeptime time.Duration) {
 					log.Error().Err(err).Msg("Failed to translate comment, continuing without translation")
 					msg.Text += "\n" + "Translation failed"
 
-				} else if !languageMatches(translatedTextLanguage, config.BotConfig.Translate.Language) {
+				} else if !languageMatches(translatedTextLanguage, config.BotConfig.Translate.Language) && strings.TrimSpace(comment.Text) != strings.TrimSpace(translatedText)  {
 					msg.Text += "\n" +
 						fmt.Sprintf(`Translated from %s:`, deepl.SourceLanguages[translatedTextLanguage]) + "\n" +
 						"<blockquote>" + translatedText + "</blockquote>"
