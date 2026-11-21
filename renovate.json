@@ -3,7 +3,9 @@
   "extends": [
     "config:recommended"
   ],
-  "dependencyDashboardTitle": "Dependency Dashboard",
+  "dependencyDashboard": {
+    "title": "Dependency Dashboard"
+  },
   "prHourlyLimit": 0,
   "assignees": ["watn3y"]
 }
