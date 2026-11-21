@@ -9,6 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/zerolog v1.35.1
 	github.com/sethvargo/go-envconfig v1.4.3
+	github.com/sethvargo/go-envconfig/v2 v2.0.0
 )
 
 require (
